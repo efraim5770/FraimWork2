@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Калькулятор</title>
+</head>
+<body>
+    <div style="padding-top: 50px; width: 70%; margin:0 auto;">
+        <table>
+            <tr>
+                <!--калькулятор-->
+                <td>
+                    <table border="1" style="text-align: center;">
+                        <tr>
+                            <td colspan="4"><input type="number" id="input_number" min="0" max="9999999" width="100%" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="OperUser('7');">7</button></td><td><button onclick="OperUser('8');">8</button></td><td><button onclick="OperUser('9');">9</button></td><td><button onclick="OperUser('C');">C</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="OperUser('4');">4</button></td><td><button onclick="OperUser('5');">5</button></td><td><button onclick="OperUser('6');">6</button></td><td><button onclick="OperUser('=');">=</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="OperUser('1');">1</button></td><td><button onclick="OperUser('2');">2</button></td><td><button onclick="OperUser('3');">3</button></td><td><button onclick="OperUser('0');">0</button></td>
+                        </tr>
+                        <tr>
+                            <td><button onclick="OperUser('+');">+</button></td><td><button onclick="OperUser('-');">-</button></td><td><button onclick="OperUser('*');">*</button></td><td><button onclick="OperUser('/');">/</button></td>
+                        </tr>
+                    </table>
+                </td>
+                <!--панель истории*/-->
+                <td>
+                    <div id="oper_mat" style="overflow-y: scroll; height: 140px;"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+<script type="text/javascript">
+    var Number1=null, Number2=null;
+    var NumberText='', Oper='';
+    //обработка операций пользователя
+    function OperUser(oper){
+        //если вводим цифры, то выводим их на экран
+        if(Number.isInteger(Number(oper))){
+            NumberText+=oper;
+            document.getElementById('input_number').value=NumberText;
+        }
+        //если 'C', то очищаем экран
+        if(oper=='C'){
+            Number1=null;
+            Number2=null;
+            NumberText='';
+            document.getElementById('input_number').value='';
+        }
+        if(oper=='+' || oper=='-' || oper=='*' || oper=="/" || oper=='='){
+            if(NumberText.length==0){
+                alert('Введите число.');
+                return;
+            }
+            if(oper=='+' || oper=='-' || oper=='*' || oper=="/")Oper=oper;
+            if(Number1==null){
+                Number1=Number(NumberText);
+                NumberText='';
+                return;
+            }
+            //if(Number1!=null && Number2!=null)Mat();
+            if(Number2==null)Number2=Number(NumberText);
+            if(oper=='='){
+                if(Number1==null && Number2==null){
+                    alert('Не указаны 2 числа для операции.');
+                    return;
+                }
+                Mat();
+            }
+        }
+    }
+    //математические вычисления
+    function Mat(){
+        var div = document.getElementById('oper_mat');
+        var text=Number1;
+        switch(Oper){
+            case '+':
+                Number1=Number1+Number2;
+                text+=' + '+Number2+' = ';
+                break;
+            case '-':
+                Number1=Number1-Number2;
+                text+=' - '+Number2+' = ';
+                break;
+            case '*':
+                Number1=Number1*Number2;
+                text+=' * '+Number2+' = ';
+                break;
+            case '/':
+                Number1=Number1/Number2;
+                text+=' / '+Number2+' = ';
+                break;
+        }
+        text+=Number1;
+        Number1=Number2=null;
+        NumberText="";
+        //добавление операции в div истории
+        var elem = document.createElement('div');
+        elem.textContent=text;
+        div.append(elem);
+        div.scrollTop = div.scrollHeight;
+        document.getElementById('input_number').value='';//прокрутка вниз в divе операций
+    }
+</script>
+</body>
+</html>
